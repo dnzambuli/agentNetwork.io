@@ -6,7 +6,7 @@ library(reshape2)
 library(igraph)
 library(GGally)
 library(rlist)
-
+#library(animation)
 
 STATES <- 8
 
@@ -30,9 +30,10 @@ STATELABELS <<-  c("Unexposed","Asymptomatic\n & contagious",
 
 ########################################################################
 #
-## create an agent
+## create transition matrix
 #
 ########################################################################
+
 makeAgent <- function(psychstate,biostate,age=30,traveler=0,is_infected = 0)
 {
   
@@ -112,12 +113,12 @@ setAgentStatusInfected<- function(agent,status=1)
   agent$is_infected <- status
   return(agent)
 }
+######################################################################
+#
+## Social Model
+#
+######################################################################
 
-#####################################################################
-#
-## Make a Network
-#
-#####################################################################
 makeNetwork<- function(numAgents=5,numsets=3,steps=1,power=1)
 {
   ord <- sample(numAgents)
@@ -156,11 +157,11 @@ makeNetwork<- function(numAgents=5,numsets=3,steps=1,power=1)
   
 }
 
-######################################################################
+########################################################################
 #
-## Add agent to the network
+## Adding a new agent to the network
 #
-######################################################################
+########################################################################
 
 addAgentToNetwork<- function(numAgents=5,prev_network = socialnetwork,connection_number=1,self_connected=1,pool)
 {
@@ -302,12 +303,11 @@ addAgentToNetwork<- function(numAgents=5,prev_network = socialnetwork,connection
   
   
 }
-
-######################################################################
+########################################################################
 #
-## social connection of the travelers
+## social connection of travelers
 #
-######################################################################
+########################################################################
 
 mygplot_updated <- function(coord, network,states,main="")
 {
@@ -356,12 +356,6 @@ mygplot_updated <- function(coord, network,states,main="")
   
   return (coord)
 }
-
-#####################################################################
-#
-## 
-#
-#####################################################################
 
 travel_ban_lift <- function( enable_outside_travel_restriction_day,second_wave_day,
                              connection_number = 1, will_affect_traveler = 0, numDays = 50,
@@ -927,13 +921,16 @@ travel_ban_lift <- function( enable_outside_travel_restriction_day,second_wave_d
   return(disthistory)
   
   
+  
+  
+  
 }
 
-#####################################################################
+#######################################################################
 #
-## initial simulations
+## initial sim
 #
-#####################################################################
+#######################################################################
 
 numAgents_initial <<- 700
 naturalImmunity <- .01
@@ -975,14 +972,6 @@ for(i in sample(numAgents_initial,numInfected))
 pool_initial <<-.GlobalEnv$pool
 local_population_infection_number <<- local_population_infection_number
 
-##################################################################
-#
-## travel ban lifted on day 49 with 3 contacts per traveller
-#
-##################################################################
-
-
-
 ####################################################################
 #
 ## the ui and server 
@@ -998,41 +987,97 @@ library(shiny)
 ####################################################################
 
 # Define UI for combined app with tab bar
+library(shiny)
+
 ui <- fluidPage(
-  titlePanel("Integrated COVID-19 Network Simulation"),
+  titlePanel("COVID-19 Network Simulation"),
   
   # Tab layout
   tabsetPanel(
     
-    # First tab for App 1
-    tabPanel("Case 1",
-             helpText("In this simulation, a 'travel ban' is implemented from Day 7 and removed early 
-                      (In this case from day 49). Each traveler will have only three connections with local agents.
-                      For this simulation, we will look at the spread of the disease through the network over time."),
-             sidebarLayout(
-               sidebarPanel(
-                 sliderInput("numDays1", "Number of Days:", min = 1, max = 100, value = 50),
-                 sliderInput("numAgents1", "Number of Agents:", min = 100, max = 1000, value = 700),
-                 actionButton("runSimulation1", "Run Simulation")
+    # Tab for First Simulation series
+    tabPanel('Simulation Series 1',
+             # Description
+             h6("In this series of simulations, no locals are affected with a strain from beginning."),
+             # Nested tabset Panel for Cases
+             tabsetPanel(
+               # First tab for Case 1
+               tabPanel("Case 1",
+                        helpText("In this simulation, a 'travel ban' is implemented from Day 7 and removed early (In this case from day 49). Each traveler will have only three connections with local agents. For this simulation, we will look at the spread of the disease through the network over time."),
+                        sidebarLayout(
+                          sidebarPanel(
+                            sliderInput("numDays1", "Number of Days:", min = 1, max = 100, value = 50),
+                            sliderInput("numAgents1", "Number of Agents:", min = 100, max = 1000, value = 700),
+                            actionButton("runSimulation1", "Run Simulation")
+                          ),
+                          mainPanel(
+                            plotOutput("networkPlot1")
+                          )
+                        )
                ),
-               mainPanel(
-                 plotOutput("networkPlot1")
+               # Second tab for Case 2
+               tabPanel("Case 2",
+                        helpText("In this simulation, a ban is implemented from Day 7 and removed early (In this case from day 49). Each traveler will have only one connection with local agents."),
+                        sidebarLayout(
+                          sidebarPanel(
+                            sliderInput("numDays2", "Number of Days:", min = 1, max = 100, value = 50),
+                            sliderInput("numAgents2", "Number of Agents:", min = 100, max = 1000, value = 700),
+                            actionButton("runSimulation2", "Run Simulation")
+                          ),
+                          mainPanel(
+                            plotOutput("networkPlot2")
+                          )
+                        )
+               ),
+               # Third tab for Case 3
+               tabPanel("Case 3",
+                        helpText("In this simulation, a ban is implemented from Day 7 and removed later (In this case from day 80). Each traveler will have only three connection with local agents"),
+                        sidebarLayout(
+                          sidebarPanel(
+                            sliderInput("numDays3", "Number of Days:", min = 1, max = 100, value = 50),
+                            sliderInput("numAgents3", "Number of Agents:", min = 100, max = 1000, value = 700),
+                            actionButton("runSimulation3", "Run Simulation")
+                          ),
+                          mainPanel(
+                            plotOutput("networkPlot3")
+                          )
+                        )
                )
              )
     ),
-    
-    # Second tab for App 2
-    tabPanel("Case 2",
-             helpText("In this simulation, a ban is implemented from Day 7 and removed early 
-                      (In this case from day 49). Each traveler will have only one connection with local agents."),
-             sidebarLayout(
-               sidebarPanel(
-                 sliderInput("numDays2", "Number of Days:", min = 1, max = 100, value = 50),
-                 sliderInput("numAgents2", "Number of Agents:", min = 100, max = 1000, value = 700),
-                 actionButton("runSimulation2", "Run Simulation")
-               ),
-               mainPanel(
-                 plotOutput("networkPlot2")
+    # Tab for Simulation Series 2
+    tabPanel('Simulation Series 2',
+             # Description
+             h6("In this series of simulations, some locals are affected with a strain from the beginning, and travelers will augment this by bringing the disease in from outside."),
+             # Nested tabset Panel for Cases
+             tabsetPanel(
+               # First tab for Case 1
+               tabPanel("Case 1",
+                        helpText("In this simulation, a travel ban is implemented from Day 7 and removed early (In this case from day 49). Each traveler will have only three connections with local agents"),
+                        sidebarLayout(
+                          sidebarPanel(
+                            sliderInput("numDays4", "Number of Days:", min = 1, max = 100, value = 50),
+                            sliderInput("numAgents4", "Number of Agents:", min = 100, max = 1000, value = 700),
+                            actionButton("runSimulation4", "Run Simulation")
+                          ),
+                          mainPanel(
+                            plotOutput("networkPlot4")
+                          )
+                        )
+               ), 
+               tabPanel("Case 2",
+                        helpText("In this simulation, a ban is implemented from Day 7 and removed later. Each traveler will have only three connection with local agents"),
+                        sidebarLayout(
+                          sidebarPanel(
+                            sliderInput("numDays5", "Number of Days:", min = 1, max = 250, value = 50),
+                            sliderInput("numAgents5", "Number of Agents:", min = 100, max = 1000, value = 700),
+                            actionButton("runSimulation5", "Run Simulation")
+                          ),
+                          mainPanel(
+                            plotOutput("networkPlot5")
+                          )
+                        )
+                 
                )
              )
     )
@@ -1042,7 +1087,7 @@ ui <- fluidPage(
 # Define server logic
 server <- function(input, output, session) {
   
-  # Server logic for App 1
+  # Server logic for Case 1
   observeEvent(input$runSimulation1, {
     numDays <- input$numDays1
     numAgents <- input$numAgents1
@@ -1056,7 +1101,7 @@ server <- function(input, output, session) {
     })
   })
   
-  # Server logic for App 2
+  # Server logic for Case 2
   observeEvent(input$runSimulation2, {
     numDays <- input$numDays2
     numAgents <- input$numAgents2
@@ -1069,6 +1114,48 @@ server <- function(input, output, session) {
                                  connection_number = 1, will_affect_traveler = 1, numDays = numDays)
     })
   })
+  
+  # Server logic for Case 3
+  observeEvent(input$runSimulation3, {
+    numDays <- input$numDays3
+    numAgents <- input$numAgents3
+    socialnetwork <- makeNetwork(numAgents, numsets = 1, power = 0.5, steps = 2)
+    enable_outside_travel_restriction_day <- 7
+    second_wave_day <- as.integer((80/100) * numDays)
+    
+    output$networkPlot3 <- renderPlot({
+      results <- travel_ban_lift(enable_outside_travel_restriction_day, second_wave_day,
+                                 connection_number = 3, will_affect_traveler = 1, numDays = numDays)
+    })
+  })
+  
+  # Server logic for case 1 simulation 2
+  observeEvent(input$runSimulation4, {
+    numDays <- input$numDays4
+    numAgents <- input$numAgents4
+    socialnetwork <- makeNetwork(numAgents, numsets = 1, power = 0.5, steps = 2)
+    enable_outside_travel_restriction_day <- 7
+    second_wave_day <- as.integer((49/100) * numDays)
+    
+    output$networkPlot4 <- renderPlot({
+      results <- travel_ban_lift(enable_outside_travel_restriction_day, second_wave_day,
+                                 connection_number = 3, will_affect_traveler = 1, numDays = numDays)
+    })
+  })
+  # Server logic for case 2 simulation 2
+  observeEvent(input$runSimulation5, {
+    numDays <- input$numDays5
+    numAgents <- input$numAgents5
+    socialnetwork <- makeNetwork(numAgents, numsets = 1, power = 0.5, steps = 2)
+    enable_outside_travel_restriction_day <- 7
+    second_wave_day <- as.integer((80/100) * numDays)
+    
+    output$networkPlot5 <- renderPlot({
+      results <- travel_ban_lift(enable_outside_travel_restriction_day, second_wave_day,
+                                 connection_number = 3, will_affect_traveler = 1, numDays = numDays)
+    })
+  })
+
 }
 
 # Run the application
