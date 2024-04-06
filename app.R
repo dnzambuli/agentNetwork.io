@@ -998,12 +998,12 @@ ui <- fluidPage(
     # Tab for First Simulation series
     tabPanel('Simulation Series 1',
              # Description
-             h6("In this series of simulations, no locals are affected with a strain from beginning."),
+             h2("In this series of simulations, no locals are affected with a strain from beginning."),
              # Nested tabset Panel for Cases
              tabsetPanel(
                # First tab for Case 1
                tabPanel("Case 1",
-                        helpText("In this simulation, a 'travel ban' is implemented from Day 7 and removed early (In this case from day 49). Each traveler will have only three connections with local agents. For this simulation, we will look at the spread of the disease through the network over time."),
+                        helpText(h4("In this simulation, a 'travel ban' is implemented from Day 7 and removed early (In this case from day 49). Each traveler will have only three connections with local agents. For this simulation, we will look at the spread of the disease through the network over time.")),
                         sidebarLayout(
                           sidebarPanel(
                             sliderInput("numDays1", "Number of Days:", min = 1, max = 100, value = 50),
@@ -1017,7 +1017,7 @@ ui <- fluidPage(
                ),
                # Second tab for Case 2
                tabPanel("Case 2",
-                        helpText("In this simulation, a ban is implemented from Day 7 and removed early (In this case from day 49). Each traveler will have only one connection with local agents."),
+                        helpText(h4("In this simulation, a ban is implemented from Day 7 and removed early (In this case from day 49). Each traveler will have only one connection with local agents.")),
                         sidebarLayout(
                           sidebarPanel(
                             sliderInput("numDays2", "Number of Days:", min = 1, max = 100, value = 50),
@@ -1031,7 +1031,7 @@ ui <- fluidPage(
                ),
                # Third tab for Case 3
                tabPanel("Case 3",
-                        helpText("In this simulation, a ban is implemented from Day 7 and removed later (In this case from day 80). Each traveler will have only three connection with local agents"),
+                        helpText(h4("In this simulation, a ban is implemented from Day 7 and removed later (In this case from day 80). Each traveler will have only three connection with local agents")),
                         sidebarLayout(
                           sidebarPanel(
                             sliderInput("numDays3", "Number of Days:", min = 1, max = 100, value = 50),
@@ -1048,12 +1048,12 @@ ui <- fluidPage(
     # Tab for Simulation Series 2
     tabPanel('Simulation Series 2',
              # Description
-             h6("In this series of simulations, some locals are affected with a strain from the beginning, and travelers will augment this by bringing the disease in from outside."),
+             h2("In this series of simulations, some locals are affected with a strain from the beginning, and travelers will augment this by bringing the disease in from outside."),
              # Nested tabset Panel for Cases
              tabsetPanel(
                # First tab for Case 1
                tabPanel("Case 1",
-                        helpText("In this simulation, a travel ban is implemented from Day 7 and removed early (In this case from day 49). Each traveler will have only three connections with local agents"),
+                        helpText(h4("In this simulation, a travel ban is implemented from Day 7 and removed early (In this case from day 49). Each traveler will have only three connections with local agents")),
                         sidebarLayout(
                           sidebarPanel(
                             sliderInput("numDays4", "Number of Days:", min = 1, max = 100, value = 50),
@@ -1066,7 +1066,7 @@ ui <- fluidPage(
                         )
                ), 
                tabPanel("Case 2",
-                        helpText("In this simulation, a ban is implemented from Day 7 and removed later. Each traveler will have only three connection with local agents"),
+                        helpText(h4("In this simulation, a ban is implemented from Day 7 and removed later. Each traveler will have only three connection with local agents")),
                         sidebarLayout(
                           sidebarPanel(
                             sliderInput("numDays5", "Number of Days:", min = 1, max = 250, value = 50),
@@ -1098,7 +1098,7 @@ server <- function(input, output, session) {
     output$networkPlot1 <- renderPlot({
       results <- travel_ban_lift(enable_outside_travel_restriction_day, second_wave_day,
                                  connection_number = 3, will_affect_traveler = 1, numDays = numDays)
-    })
+    }, width = 900, height = 900)
   })
   
   # Server logic for Case 2
@@ -1112,7 +1112,7 @@ server <- function(input, output, session) {
     output$networkPlot2 <- renderPlot({
       results <- travel_ban_lift(enable_outside_travel_restriction_day, second_wave_day,
                                  connection_number = 1, will_affect_traveler = 1, numDays = numDays)
-    })
+    }, width = 900, height = 900)
   })
   
   # Server logic for Case 3
@@ -1126,7 +1126,7 @@ server <- function(input, output, session) {
     output$networkPlot3 <- renderPlot({
       results <- travel_ban_lift(enable_outside_travel_restriction_day, second_wave_day,
                                  connection_number = 3, will_affect_traveler = 1, numDays = numDays)
-    })
+    }, width = 900, height = 900)
   })
   
   # Server logic for case 1 simulation 2
@@ -1140,7 +1140,7 @@ server <- function(input, output, session) {
     output$networkPlot4 <- renderPlot({
       results <- travel_ban_lift(enable_outside_travel_restriction_day, second_wave_day,
                                  connection_number = 3, will_affect_traveler = 1, numDays = numDays)
-    })
+    }, width = 900, height = 900)
   })
   # Server logic for case 2 simulation 2
   observeEvent(input$runSimulation5, {
@@ -1153,7 +1153,7 @@ server <- function(input, output, session) {
     output$networkPlot5 <- renderPlot({
       results <- travel_ban_lift(enable_outside_travel_restriction_day, second_wave_day,
                                  connection_number = 3, will_affect_traveler = 1, numDays = numDays)
-    })
+    }, width = 900, height = 900)
   })
 
 }

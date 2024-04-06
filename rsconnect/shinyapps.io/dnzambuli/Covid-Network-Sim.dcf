@@ -5,7 +5,7 @@ account: dnzambuli
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 11599693
-bundleId: 8423866
+bundleId: 8461657
 url: https://dnzambuli.shinyapps.io/Covid-Network-Sim/
 version: 1
 asMultiple: FALSE
