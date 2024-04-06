@@ -5,9 +5,9 @@ account: dnzambuli
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 11599693
-bundleId: 8461657
+bundleId: 8461673
 url: https://dnzambuli.shinyapps.io/Covid-Network-Sim/
 version: 1
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: .RDataTmp|.Rprofile|Bar_data_1.xlsx|Bar_data_2.xlsx|Bar_data_3.xlsx|Bar_Data_4.xlsx|Bar_Data_5.xlsx|Network_Data_1.xlsx|Network_Data_2.xlsx|Network_Data_3.xlsx|Network_Data_4.xlsx|Network_Data_5.xlsx
+ignoredFiles: .RDataTmp|.Rprofile|Bar_data_1.xlsx|Bar_data_2.xlsx|Bar_data_3.xlsx|Bar_Data_4.xlsx|Bar_Data_5.xlsx|index.html|Network_Data_1.xlsx|Network_Data_2.xlsx|Network_Data_3.xlsx|Network_Data_4.xlsx|Network_Data_5.xlsx
